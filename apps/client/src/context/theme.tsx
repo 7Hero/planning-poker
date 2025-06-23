@@ -15,15 +15,16 @@ const ThemeContext = createContext<ThemeProps | undefined>(undefined)
 
 const ThemeProvider = ({ children, defaultTheme = 'light' }: ThemeProviderProps) => {
   const theme = getTheme(defaultTheme);
-  const [resolvedTheme, setResolvedTheme] = useState(() => theme === 'system' ? getSystemTheme() : theme);
+  const [resolvedTheme, setResolvedTheme] = useState<string>(() => theme === 'system' ? getSystemTheme() : theme);
 
   useEffect(() => {
+    console.log(`Theme set to: ${resolvedTheme}`);
     document.documentElement.setAttribute('data-theme', resolvedTheme);
     localStorage.setItem('theme', resolvedTheme);
   }, [resolvedTheme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme: setResolvedTheme }}>
+    <ThemeContext.Provider value={{ theme: resolvedTheme, setTheme: setResolvedTheme }}>
       {children}
     </ThemeContext.Provider>
   );

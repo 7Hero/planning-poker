@@ -1,8 +1,28 @@
 @import "tailwindcss";
 
+@theme inline {
+  --color-primary: var(--primary);
+  --color-background: var(--background);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-quaternary: var(--text-quaternary);
+  --color-button-hover: var(--button-hover);
+  --color-container-stroke: var(--container-stroke);
+  --color-hover-1: var(--hover-1);
+  --color-popover-background: var(--popover-background);
+  --color-muted: var(--muted);
+  --color-card: var(--card);
+  --color-border: var(--border);
+  --font-family: 'Geist', sans-serif;  
+}
+
 @layer utilities {
   :root {
-    --background: #e8e8e8;
+    --primary: oklch(.205 0 0);
+    --card: oklch(1 0 0);
+    --border: oklch(.922 0 0);
+    --background: white;
     --text-primary: #151515;
     --text-secondary: #2e2e2e;
     --text-tertiary: #555555;
@@ -15,6 +35,9 @@
   }
 
   [data-theme='dark'] {
+    --primary: oklch(.922 0 0);
+    --card: oklch(.205 0 0);
+    --border: oklch(1 0 0 / 10%);
     --background: #101010;
     --text-primary: #eaeaea;
     --text-secondary: #d1d1d1;
@@ -26,11 +49,28 @@
     --popover-background: #1d1d1d;
     --muted: #1d1d1d;
   }
-
+  
   body {
+    font-family: 'Geist', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background: var(--background);
     transition: background 0.15s;
   }
+}
+
+@utility text-primary {
+  color: var(--text-primary);
+}
+
+@utility text-secondary {
+  color: var(--text-secondary);
+}
+
+@utility text-tertiary {
+  color: var(--text-tertiary);
+}
+
+@utility text-quaternary {
+  color: var(--text-quaternary);
 }

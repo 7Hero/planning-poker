@@ -1,7 +1,20 @@
+import { Copy } from "lucide-react";
+import { Button } from "./button";
+import { ThemeSwitcher } from "./theme-switcher";
+
+const VerticalSeparator = () => <div className="w-px h-4 bg-primary/30 mx-2" />;
+
 export default function Header() {
   return (
-    <header>
-      <h1>Pocker planning app</h1>
+    <header className="flex items-center justify-between h-14 p-4">
+      <div className="flex items-center">
+        <span className="font-medium text-primary">Poker Planning App</span>
+        <VerticalSeparator />
+        <Button className="p-2 bg-transparent hover:bg-primary/10 active:bg-primary/20 active:scale-95">
+          <Copy width={16} height={16} className="text-primary" />
+        </Button>
+      </div>
+      <ThemeSwitcher />
     </header>
   );
 }
