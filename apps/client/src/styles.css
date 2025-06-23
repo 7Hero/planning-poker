@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@layer utilities {
+  :root {
+    --background: #e8e8e8;
+    --text-primary: #151515;
+    --text-secondary: #2e2e2e;
+    --text-tertiary: #555555;
+    --text-quaternary: #656565;
+    --button-hover: #ddd;
+    --container-stroke: #ddd;
+    --hover-1: #e2e2e2;
+    --popover-background: #d4d4d4;
+    --muted: #dbdbdb;
+  }
+
+  [data-theme='dark'] {
+    --background: #101010;
+    --text-primary: #eaeaea;
+    --text-secondary: #d1d1d1;
+    --text-tertiary: #a2a2a2;
+    --text-quaternary: #747474;
+    --button-hover: #2f2f2f;
+    --container-stroke: #2f2f2f;
+    --hover-1: #1d1d1d;
+    --popover-background: #1d1d1d;
+    --muted: #1d1d1d;
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: var(--background);
+    transition: background 0.15s;
+  }
+}
