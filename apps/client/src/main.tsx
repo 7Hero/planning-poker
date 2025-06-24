@@ -1,9 +1,10 @@
 // import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./app.tsx";
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import { ThemeProvider } from "./context/theme.tsx";
-import RootLayout from "./layouts/root-layout";
+import { RootLayout } from "./layouts/root-layout";
+import { PokerRoom } from "./pages/poker-room.tsx";
+import { ProtectedRoute } from "./pages/protected-route.tsx";
 
 createRoot(document.getElementById("root")!).render(
   // <StrictMode>
@@ -11,8 +12,13 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <Routes>
         <Route element={<RootLayout />}>
-          <Route path="/" element={<App />} />
-          <Route path="/:id" element={<>Pocker room</>} />
+          <Route element={<ProtectedRoute />}>
+            <Route
+              path="/"
+              element={<Navigate to={`/room/${crypto.randomUUID()}`} replace />}
+            />
+            <Route path="/room/:roomId" element={<PokerRoom />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
