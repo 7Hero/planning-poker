@@ -16,7 +16,7 @@ type RoomState = {
   connect: () => void;
   joinRoom: (roomId: string, username: string) => void;
   leaveRoom: (roomId: string) => void;
-  vote: (voteValue: CardType) => void;
+  vote: (vote: boolean, voteValue: CardType) => void;
 }
 
 export const useRoomStore = create<RoomState>((set, get) => {
@@ -38,6 +38,7 @@ export const useRoomStore = create<RoomState>((set, get) => {
 
   socket.on("room-state", (users) => {
     set(({ users }))
+    console.log(users);
   })
 
   socket.on("user-left", users => {
@@ -63,8 +64,8 @@ export const useRoomStore = create<RoomState>((set, get) => {
     leaveRoom: (roomId) => {
       socket.emit("leave-room", roomId)
     },
-    vote: (voteValue) => {
-      socket.emit("vote", voteValue);
+    vote: (voted, voteValue) => {
+      socket.emit("vote", voted, voteValue);
     }
   }
 })

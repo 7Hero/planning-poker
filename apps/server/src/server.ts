@@ -24,15 +24,15 @@ io.on("connection", (socket) => {
     console.info(`User ${user?.username} left room: ${user?.roomId}`);
   });
 
-  socket.on("vote", (voteValue) => {
+  socket.on("vote", (voted, voteValue) => {
     const user = findUserBySocketId(socket.id);
     if (user) {
-      user.voted = true;
-      user.voteValue = voteValue;
+      user.voted = voted;
+      voted ? user.voteValue = voteValue : user.voteValue = null;
       io.to(user.roomId).emit('room-state', getUsersByRoomId(user.roomId))
     }
-
   })
+
   socket.on("disconnect", () => {
     const user = removeSocketFromUser(socket.id);
     if (user) {

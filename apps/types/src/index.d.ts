@@ -15,7 +15,7 @@ export type UserState = {
 type WSClientToServerEvents = {
   "join-room": (roomId: string, username: string) => void;
   "leave-room": (roomId: string) => void;
-  "vote": (voteValue: CardType) => void;
+  "vote": (voted: boolean, voteValue: CardType) => void;
 }
 
 type WSServerToClientEvents = {

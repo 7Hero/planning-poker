@@ -5,9 +5,7 @@ const RootLayout = () => {
   return (
     <main className="h-screen flex flex-col">
       <Header />
-      <div className="flex-1">
-        <Outlet />
-      </div>
+      <Outlet />
     </main>
   );
 };

@@ -16,10 +16,10 @@ const getUsersByRoomId = (roomId: string) => {
 }
 
 const addUser = (roomId: string, username: string, socketId: string) => {
-  const existingIndex = users.findIndex(user => user.username === username);
-  if (existingIndex !== -1) {
-    users.splice(existingIndex, 1);
-  }
+  // const existingIndex = users.findIndex(user => user.username === username);
+  // if (existingIndex !== -1) {
+  //   users.splice(existingIndex, 1);
+  // }
 
   const newUser: UserState = {
     socketId,
@@ -28,6 +28,7 @@ const addUser = (roomId: string, username: string, socketId: string) => {
     voted: false,
     voteValue: null,
   };
+
   users.push(newUser);
 
   return newUser;
