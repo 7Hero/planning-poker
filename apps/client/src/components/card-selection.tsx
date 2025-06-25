@@ -2,6 +2,7 @@ import type { CardType } from "@planning-poker/types";
 import { useState } from "react";
 import { cn } from "../utils";
 import { useRoomStore } from "../stores";
+import { useShallow } from "zustand/shallow";
 
 const CARD_LIST: CardType[] = [
   "1",
@@ -19,9 +20,13 @@ const CARD_LIST: CardType[] = [
 
 const CardSelection = () => {
   const [selectedCard, setSelected] = useState<CardType>(null);
-  const socket = useRoomStore((state) => state.socket);
-  const getCurrentUser = useRoomStore((state) => state.getCurrentUser);
-  const isGameOver = useRoomStore((state) => state.isGameOver);
+  const { socket, getCurrentUser, isGameOver } = useRoomStore(
+    useShallow((state) => ({
+      socket: state.socket,
+      getCurrentUser: state.getCurrentUser,
+      isGameOver: state.isGameOver,
+    }))
+  );
 
   const handleCardSelection = (card: CardType) => {
     if (card === selectedCard) {

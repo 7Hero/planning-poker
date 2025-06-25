@@ -9,6 +9,7 @@ const VerticalSeparator = () => <div className="w-px h-4 bg-primary/30 mx-2" />;
 
 const Header = () => {
   const { copy, isCopied } = useCopyToClipboard();
+
   return (
     <header className="flex items-center justify-between h-16 p-4 border-b border-b-border">
       <div className="flex items-center">

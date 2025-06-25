@@ -1,11 +1,11 @@
 import { Button } from "./button";
 import { useState } from "react";
 
-const JoinRoomModal = ({
-  onRoomJoin,
-}: {
+type JoinRoomModalProps = {
   onRoomJoin: (username: string) => void;
-}) => {
+};
+
+const JoinRoomModal = ({ onRoomJoin }: JoinRoomModalProps) => {
   const [_username, _setUsername] = useState("");
 
   return (

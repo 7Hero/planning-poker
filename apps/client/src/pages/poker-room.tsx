@@ -2,13 +2,19 @@ import { useEffect, useMemo } from "react";
 import { useParams } from "react-router";
 import { Button, Card, CardSelection } from "../components";
 import { useRoomStore, useUserStore } from "../stores";
+import { useShallow } from "zustand/shallow";
 
 const PokerRoom = () => {
   const { roomId } = useParams();
+
   const username = useUserStore((state) => state.username);
-  const users = useRoomStore((state) => state.users);
-  const isGameOver = useRoomStore((state) => state.isGameOver);
-  const socket = useRoomStore((state) => state.socket);
+  const { users, isGameOver, socket } = useRoomStore(
+    useShallow((state) => ({
+      users: state.users,
+      isGameOver: state.isGameOver,
+      socket: state.socket,
+    }))
+  );
 
   const handleReveal = () => {
     if (!isGameOver) {
