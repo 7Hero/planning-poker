@@ -4,14 +4,7 @@
   --color-primary: var(--primary);
   --color-background: var(--background);
   --color-text-primary: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
   --color-text-tertiary: var(--text-tertiary);
-  --color-text-quaternary: var(--text-quaternary);
-  --color-button-hover: var(--button-hover);
-  --color-container-stroke: var(--container-stroke);
-  --color-hover-1: var(--hover-1);
-  --color-popover-background: var(--popover-background);
-  --color-muted: var(--muted);
   --color-card: var(--card);
   --color-border: var(--border);
   --font-family: 'Geist', sans-serif;  
@@ -20,18 +13,11 @@
 @layer utilities {
   :root {
     --primary: oklch(.205 0 0);
-    --card: oklch(1 0 0);
-    --border: oklch(.922 0 0);
     --background: white;
     --text-primary: #151515;
-    --text-secondary: #2e2e2e;
     --text-tertiary: #555555;
-    --text-quaternary: #656565;
-    --button-hover: #ddd;
-    --container-stroke: #ddd;
-    --hover-1: #e2e2e2;
-    --popover-background: #d4d4d4;
-    --muted: #dbdbdb;
+    --card: oklch(1 0 0);
+    --border: oklch(.922 0 0);
   }
 
   [data-theme='dark'] {
@@ -40,14 +26,7 @@
     --border: oklch(1 0 0 / 10%);
     --background: #101010;
     --text-primary: #eaeaea;
-    --text-secondary: #d1d1d1;
     --text-tertiary: #a2a2a2;
-    --text-quaternary: #747474;
-    --button-hover: #2f2f2f;
-    --container-stroke: #2f2f2f;
-    --hover-1: #1d1d1d;
-    --popover-background: #1d1d1d;
-    --muted: #1d1d1d;
   }
   
   body {
@@ -63,14 +42,10 @@
   color: var(--text-primary);
 }
 
-@utility text-secondary {
-  color: var(--text-secondary);
-}
-
 @utility text-tertiary {
   color: var(--text-tertiary);
 }
 
-@utility text-quaternary {
-  color: var(--text-quaternary);
+.transition-cool {
+  transition: transform 0.6s cubic-bezier(.4,2,.6,1);
 }

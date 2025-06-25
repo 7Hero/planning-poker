@@ -45,13 +45,13 @@ const CardSelection = () => {
               "px-2 py-4 border border-border rounded-lg w-[50px] flex items-center justify-center transition-all duration-200 transform",
               selectedCard === card
                 ? "bg-primary -translate-y-2 shadow-lg"
-                : "bg-background"
+                : "bg-card"
             )}
           >
             <span
               className={cn(
                 "text-2xl",
-                selectedCard === card ? "text-background" : "text-primary"
+                selectedCard === card ? "text-card" : "text-primary"
               )}
             >
               {card}
