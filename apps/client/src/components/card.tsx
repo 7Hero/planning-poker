@@ -2,13 +2,7 @@ import type { UserState } from "@planning-poker/types";
 import { cn } from "../utils";
 import { useMemo } from "react";
 
-const CardList = ({
-  user,
-  revealed,
-}: {
-  user: UserState;
-  revealed: boolean;
-}) => {
+const Card = ({ user, revealed }: { user: UserState; revealed: boolean }) => {
   const cardValue = useMemo(
     () => (revealed ? user.voteValue : null),
     [revealed, user]
@@ -18,7 +12,7 @@ const CardList = ({
     <div className="flex flex-col gap-2 items-center" key={user.socketId}>
       <div
         className={cn(
-          "relative min-w-[60px] min-h-[132px] sm:min-w-[100px] perspective-distant transition-cool transition-all duration-500 transform-3d",
+          "relative min-w-[100px] min-h-[132px] perspective-distant transition-cool transition-all duration-500 transform-3d",
           revealed && "rotate-y-180"
         )}
       >
@@ -80,4 +74,4 @@ const CardList = ({
   );
 };
 
-export { CardList };
+export { Card };

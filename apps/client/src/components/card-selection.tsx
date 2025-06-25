@@ -36,7 +36,7 @@ const CardSelection = () => {
   return (
     <div className="flex flex-col gap-4 items-center">
       <div>Pick a card 👇</div>
-      <div className="flex gap-4 items-center justify-center flex-wrap">
+      <div className="flex gap-4 items-center justify-around sm:justify-center flex-wrap">
         {CARD_LIST.map((card) => (
           <button
             onClick={() => handleCardSelection(card)}
