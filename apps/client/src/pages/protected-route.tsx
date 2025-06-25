@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useParams } from "react-router";
-import { JoinRoomModal } from "../components/join-room-modal";
-import { useUserStore } from "../stores/user";
+import { JoinRoomModal } from "../components";
+import { useUserStore } from "../stores";
 
 const ProtectedRoute = () => {
   const { roomId } = useParams();

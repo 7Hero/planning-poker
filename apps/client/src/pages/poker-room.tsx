@@ -1,18 +1,22 @@
-import { useEffect, useMemo, useState } from "react";
-import { useRoomStore } from "../stores/room";
+import { useEffect, useMemo } from "react";
 import { useParams } from "react-router";
-import { useUserStore } from "../stores/user";
-import { CardSelection } from "../components/card-selection";
-import { Button } from "../components/button";
-import { Card } from "../components/card";
+import { Button, Card, CardSelection } from "../components";
+import { useRoomStore, useUserStore } from "../stores";
 
 const PokerRoom = () => {
   const { roomId } = useParams();
-  const joinRoom = useRoomStore((state) => state.joinRoom);
   const username = useUserStore((state) => state.username);
   const users = useRoomStore((state) => state.users);
-  const leaveRoom = useRoomStore((state) => state.leaveRoom);
-  const [revealed, setRevealed] = useState(false);
+  const isGameOver = useRoomStore((state) => state.isGameOver);
+  const socket = useRoomStore((state) => state.socket);
+
+  const handleReveal = () => {
+    if (!isGameOver) {
+      socket.emit("reveal", roomId!);
+    } else {
+      socket.emit("new-round", roomId!);
+    }
+  };
 
   const votesCount = useMemo(
     () => users.reduce((prev, user) => (user.voted ? prev + 1 : prev), 0),
@@ -20,8 +24,11 @@ const PokerRoom = () => {
   );
 
   useEffect(() => {
-    joinRoom(roomId!, username);
-    return () => leaveRoom(roomId!);
+    socket.on("connect", () => socket.emit("join-room", roomId!, username));
+    socket.emit("join-room", roomId!, username);
+    return () => {
+      socket.emit("leave-room", roomId!);
+    };
   }, []);
 
   return (
@@ -32,11 +39,15 @@ const PokerRoom = () => {
         </p>
         <div className="flex gap-2 sm:gap-8 flex-wrap justify-around sm:justify-center px-2">
           {users.map((user) => (
-            <Card key={user.socketId} user={user} revealed={revealed} />
+            <Card key={user.socketId} user={user} revealed={isGameOver} />
           ))}
         </div>
-        <Button className="mt-8" onClick={() => setRevealed(!revealed)}>
-          Reveal cards
+        <Button
+          className="mt-8"
+          onClick={handleReveal}
+          disabled={!isGameOver && votesCount === 0}
+        >
+          {isGameOver ? "Restart round" : "Reaveal cards"}
         </Button>
       </div>
       <div className="fixed flex flex-1 bottom-8 justify-center px-4">

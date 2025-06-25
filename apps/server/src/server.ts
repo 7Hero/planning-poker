@@ -1,42 +1,57 @@
 import { Server } from "socket.io";
-import { addUser, findUserBySocketId, getUsersByRoomId, removeSocketFromUser, users } from "./db";
-import type { WSClientToServerEvents, WSServerToClientEvents } from "@planning-poker/types";
+import { addUser, getRoom, getRoomState, getUser, newRound, removeUser, revealRoom, updateUser } from "./db";
+import type { UserState, WSClientToServerEvents, WSServerToClientEvents } from "@planning-poker/types";
 
 const io = new Server<WSClientToServerEvents, WSServerToClientEvents>({ cors: { origin: "*" } });
 
 io.on("connection", (socket) => {
+
+
   socket.on("join-room", (roomId, username) => {
     const user = addUser(roomId, username, socket.id);
-    socket.join(roomId);
-    socket.emit('room-state', getUsersByRoomId(roomId));
-    socket.to(roomId).emit("user-joined", user);
+    const room = getRoom(roomId);
 
-    console.info(`User joined room: ${username}, Room: ${roomId}`);
+    socket.join(roomId);
+
+    io.to(roomId).emit("state-update", getRoomState(roomId))
+
+    console.info(`User ${username} joined room: ${roomId}`);
   });
 
+  socket.on("vote", (voteValue) => {
+    const user = updateUser(socket.id, voteValue);
+    io.to(user.roomId).emit('state-update', getRoomState(user.roomId))
+  })
+
+
+  socket.on("reveal", (roomId) => {
+    revealRoom(roomId)
+
+    io.to(roomId).emit("state-update", getRoomState(roomId))
+
+    console.info(`Room ${roomId} has been revealed/restarted`);
+  })
+
+  socket.on("new-round", (roomId: string) => {
+    newRound(roomId);
+
+    io.to(roomId).emit("state-update", getRoomState(roomId))
+  })
+
   socket.on("leave-room", (roomId) => {
+    const [user] = removeUser(socket.id)
     socket.leave(roomId);
-    const user = removeSocketFromUser(socket.id);
-    if (user) {
-      socket.to(user.roomId).emit("user-left", users);
-    }
+
+    io.to(roomId).emit("state-update", getRoomState(roomId))
 
     console.info(`User ${user?.username} left room: ${user?.roomId}`);
   });
 
-  socket.on("vote", (voted, voteValue) => {
-    const user = findUserBySocketId(socket.id);
-    if (user) {
-      user.voted = voted;
-      voted ? user.voteValue = voteValue : user.voteValue = null;
-      io.to(user.roomId).emit('room-state', getUsersByRoomId(user.roomId))
-    }
-  })
-
   socket.on("disconnect", () => {
-    const user = removeSocketFromUser(socket.id);
-    if (user) {
-      socket.to(user.roomId).emit("user-left", getUsersByRoomId(user.roomId));
+    const [user, isDeleted] = removeUser(socket.id);
+
+    if (isDeleted) {
+      io.to(user.roomId).emit("state-update", getRoomState(user.roomId))
     }
 
     console.info(`User ${user?.username} left room: ${user?.roomId}`);

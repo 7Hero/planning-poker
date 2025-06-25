@@ -12,14 +12,18 @@ export type UserState = {
   voteValue: CardType;
 };
 
+export type RoomState = {
+  isGameOver: boolean;
+}
+
 type WSClientToServerEvents = {
   "join-room": (roomId: string, username: string) => void;
   "leave-room": (roomId: string) => void;
-  "vote": (voted: boolean, voteValue: CardType) => void;
+  "vote": (voteValue: CardType) => void;
+  "reveal": (roomId: string) => void;
+  "new-round": (roomId: string) => void;
 }
 
 type WSServerToClientEvents = {
-  "room-state": (users: UserState[]) => void;
-  "user-joined": (user: UserState) => void;
-  "user-left": (users: UserState[]) => void;
+  "state-update": (users: { users: UserState[], isGameOver: boolean }) => void;
 }

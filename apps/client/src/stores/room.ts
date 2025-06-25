@@ -1,6 +1,6 @@
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import { create } from "zustand";
-import type { CardType, UserState } from "@planning-poker/types";
+import type { UserState, WSClientToServerEvents, WSServerToClientEvents } from "@planning-poker/types";
 import { useUserStore } from "./user";
 
 const socket = io(import.meta.env.VITE_WS_URL, {
@@ -12,11 +12,8 @@ const socket = io(import.meta.env.VITE_WS_URL, {
 type RoomState = {
   users: UserState[],
   isGameOver: boolean;
+  socket: Socket<WSServerToClientEvents, WSClientToServerEvents>;
   getCurrentUser: () => UserState;
-  connect: () => void;
-  joinRoom: (roomId: string, username: string) => void;
-  leaveRoom: (roomId: string) => void;
-  vote: (vote: boolean, voteValue: CardType) => void;
 }
 
 export const useRoomStore = create<RoomState>((set, get) => {
@@ -32,40 +29,18 @@ export const useRoomStore = create<RoomState>((set, get) => {
     console.error("WebSocket connection error:", error);
   });
 
-  socket.on("user-joined", user => {
-    set(state => ({ users: [...state.users, user] }))
+  socket.on("state-update", (state) => {
+    set(({ users: state.users, isGameOver: state.isGameOver }))
   })
-
-  socket.on("room-state", (users) => {
-    set(({ users }))
-    console.log(users);
-  })
-
-  socket.on("user-left", users => {
-    set(({ users }))
-  })
-
 
   return {
     users: [],
     isGameOver: false,
+    socket,
     getCurrentUser: () => {
       const username = useUserStore.getState().username;
       return get().users.find(u => u.username === username) as UserState;
     },
-    connect: () => {
-      if (!socket.connected) {
-        socket.connect();
-      }
-    },
-    joinRoom: (roomId, username) => {
-      socket.emit("join-room", roomId, username);
-    },
-    leaveRoom: (roomId) => {
-      socket.emit("leave-room", roomId)
-    },
-    vote: (voted, voteValue) => {
-      socket.emit("vote", voted, voteValue);
-    }
+
   }
 })

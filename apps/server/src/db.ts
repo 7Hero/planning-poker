@@ -1,41 +1,74 @@
-import { UserState } from "@planning-poker/types";
+import { CardType, RoomState, UserState } from "@planning-poker/types";
 
-const users: UserState[] = [];
-const rooms = [];
-
-const findUserByUsername = (username: string) => {
-  return users.find(user => user.username === username);
-};
-
-const findUserBySocketId = (socketId: string) => {
-  return users.find(user => user.socketId === socketId);
-};
+const users: Map<string, UserState> = new Map();
+const rooms: Map<string, RoomState> = new Map();
 
 const getUsersByRoomId = (roomId: string) => {
-  return users.filter(user => user.roomId === roomId);
+  return Array.from(users.values()).filter(u => u.roomId === roomId)
 }
 
 const addUser = (roomId: string, username: string, socketId: string) => {
-  const newUser: UserState = {
-    socketId,
-    username,
-    roomId,
-    voted: false,
-    voteValue: null,
-  };
-
-  users.push(newUser);
-
-  return newUser;
+  const user: UserState = { roomId, username, socketId, voted: false, voteValue: null };
+  users.set(socketId, user);
+  return user;
 };
 
-const removeSocketFromUser = (socketId: string) => {
-  const userIndex = users.findIndex(user => user.socketId === socketId);
-  if (userIndex !== -1) {
-    const [user] = users.splice(userIndex, 1);
-    return user;
+const getUser = (socketId: string) => {
+  return users.get(socketId)!;
+}
+
+const removeUser = (socketId: string): [UserState, boolean] => {
+  const userDeleted = getUser(socketId);
+  const isDeleted = users.delete(socketId);
+
+  return [userDeleted, isDeleted];
+};
+
+const updateUser = (socketId: string, voteValue: CardType) => {
+  const user = getUser(socketId)
+
+  user.voted = voteValue ? true : false;
+  user.voteValue = voteValue;
+
+  return user;
+}
+
+const getRoom = (roomId: string) => {
+  if (!rooms.has(roomId)) {
+    rooms.set(roomId, { isGameOver: false });
   }
-  return null;
-};
+  return rooms.get(roomId)!;
+}
 
-export { users, addUser, getUsersByRoomId, findUserBySocketId, findUserByUsername, removeSocketFromUser };
+const revealRoom = (roomId: string) => {
+  const room = getRoom(roomId);
+  room.isGameOver = true;
+}
+
+const newRound = (roomId: string) => {
+  const room = getRoom(roomId);
+  const users = getUsersByRoomId(roomId);
+
+  users.forEach(user => { user.voteValue = null; user.voted = false })
+  room.isGameOver = false;
+}
+
+const maskUserVote = (users: UserState[]) => {
+  return users.map(user => ({ ...user, voteValue: null }));
+}
+
+const getRoomState = (roomId: string) => {
+  const room = getRoom(roomId);
+  const users = getUsersByRoomId(roomId);
+
+  if (!room.isGameOver) {
+    room.isGameOver = users.every(user => user.voted);;
+  }
+
+  return {
+    isGameOver: room.isGameOver,
+    users: room.isGameOver ? users : maskUserVote(users)
+  }
+}
+
+export { users, addUser, getUser, updateUser, removeUser, getRoom, revealRoom, newRound, getRoomState };

@@ -1,7 +1,7 @@
 import type { CardType } from "@planning-poker/types";
-import { useRoomStore } from "../stores/room";
 import { useState } from "react";
 import { cn } from "../utils";
+import { useRoomStore } from "../stores";
 
 const CARD_LIST: CardType[] = [
   "1",
@@ -19,16 +19,16 @@ const CARD_LIST: CardType[] = [
 
 const CardSelection = () => {
   const [selectedCard, setSelected] = useState<CardType>(null);
-
-  const currentUser = useRoomStore((state) => state.getCurrentUser);
-  const vote = useRoomStore((state) => state.vote);
+  const socket = useRoomStore((state) => state.socket);
+  const getCurrentUser = useRoomStore((state) => state.getCurrentUser);
+  const isGameOver = useRoomStore((state) => state.isGameOver);
 
   const handleCardSelection = (card: CardType) => {
-    if (card === currentUser()?.voteValue) {
-      vote(false, null);
+    if (card === selectedCard) {
+      socket.emit("vote", null);
       setSelected(null);
     } else {
-      vote(true, card);
+      socket.emit("vote", card);
       setSelected(card);
     }
   };
@@ -40,10 +40,11 @@ const CardSelection = () => {
         {CARD_LIST.map((card) => (
           <button
             onClick={() => handleCardSelection(card)}
+            disabled={isGameOver}
             key={card}
             className={cn(
               "px-2 py-4 border border-border rounded-lg w-[50px] flex items-center justify-center transition-all duration-200 transform",
-              selectedCard === card
+              selectedCard === card && getCurrentUser()?.voted
                 ? "bg-primary -translate-y-2 shadow-lg"
                 : "bg-card"
             )}
@@ -51,7 +52,9 @@ const CardSelection = () => {
             <span
               className={cn(
                 "text-2xl",
-                selectedCard === card ? "text-card" : "text-primary"
+                selectedCard === card && getCurrentUser()?.voted
+                  ? "text-card"
+                  : "text-primary"
               )}
             >
               {card}
