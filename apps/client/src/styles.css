@@ -10,12 +10,27 @@
   --font-family: 'Geist', sans-serif;  
 }
 
+@theme {
+  --animate-slide-down: slide-down 0.15s ease-in-out forwards;
+
+  @keyframes slide-down {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+}
+
 @layer utilities {
   :root {
-    --primary: oklch(.205 0 0);
-    --background: white;
-    --text-primary: #151515;
-    --text-tertiary: #555555;
+    --primary: oklch(.300 0 0);
+    --background: oklch(1 0 0);
+    --text-primary: oklch(0.1957 0 0);
+    --text-tertiary: oklch(0.4495 0 0);
     --card: oklch(1 0 0);
     --border: oklch(.922 0 0);
   }
@@ -24,9 +39,9 @@
     --primary: oklch(.922 0 0);
     --card: oklch(.205 0 0);
     --border: oklch(1 0 0 / 10%);
-    --background: #101010;
-    --text-primary: #eaeaea;
-    --text-tertiary: #a2a2a2;
+    --background: oklch(0.173 0 0);
+    --text-primary: oklch(0.937 0 0);
+    --text-tertiary: oklch(0.7122 0 0);
   }
   
   body {

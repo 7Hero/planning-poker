@@ -4,7 +4,7 @@ import { cn } from "../utils";
 import { useRoomStore } from "../stores";
 import { useShallow } from "zustand/shallow";
 
-const CARD_LIST: CardType[] = [
+const CARDS: CardType[] = [
   "1",
   "2",
   "3",
@@ -42,7 +42,7 @@ const CardSelection = () => {
     <div className="flex flex-col gap-4 items-center">
       <div>Pick a card 👇</div>
       <div className="flex gap-4 items-center justify-around sm:justify-center flex-wrap">
-        {CARD_LIST.map((card) => (
+        {CARDS.map((card) => (
           <button
             onClick={() => handleCardSelection(card)}
             disabled={isGameOver}

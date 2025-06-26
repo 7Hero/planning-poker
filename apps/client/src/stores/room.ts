@@ -1,7 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import { create } from "zustand";
-import type { UserState, WSClientToServerEvents, WSServerToClientEvents } from "@planning-poker/types";
-import { useUserStore } from "./user";
+import type { TimerState, UserState, WSClientToServerEvents, WSServerToClientEvents } from "@planning-poker/types";
 
 const socket = io(import.meta.env.VITE_WS_URL, {
   autoConnect: true,
@@ -10,9 +9,11 @@ const socket = io(import.meta.env.VITE_WS_URL, {
 
 
 type RoomState = {
+  socket: Socket<WSServerToClientEvents, WSClientToServerEvents>;
   users: UserState[],
   isGameOver: boolean;
-  socket: Socket<WSServerToClientEvents, WSClientToServerEvents>;
+  timer: TimerState;
+  currentUserId: string | null;
   getCurrentUser: () => UserState;
 }
 
@@ -29,18 +30,27 @@ export const useRoomStore = create<RoomState>((set, get) => {
     console.error("WebSocket connection error:", error);
   });
 
+  socket.on("identity", (socketId) => {
+    set({ currentUserId: socketId })
+  })
+
   socket.on("state-update", (state) => {
     set(({ users: state.users, isGameOver: state.isGameOver }))
   })
 
-  return {
-    users: [],
-    isGameOver: false,
-    socket,
-    getCurrentUser: () => {
-      const username = useUserStore.getState().username;
-      return get().users.find(u => u.username === username) as UserState;
-    },
+  socket.on("timer-update", (state) => {
+    set({ timer: state })
+  })
 
+  return {
+    socket,
+    users: [],
+    currentUserId: null,
+    isGameOver: false,
+    timer: { expiresAt: 0, running: false },
+
+    getCurrentUser: () => {
+      return get().users.find(u => u.socketId === get().currentUserId) as UserState;
+    },
   }
 })

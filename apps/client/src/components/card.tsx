@@ -1,8 +1,11 @@
 import type { UserState } from "@planning-poker/types";
 import { cn } from "../utils";
 import { useMemo } from "react";
+import { useRoomStore } from "../stores";
 
 const Card = ({ user, revealed }: { user: UserState; revealed: boolean }) => {
+  const currentUserId = useRoomStore((state) => state.currentUserId);
+
   const cardValue = useMemo(
     () => (revealed ? user.voteValue : null),
     [revealed, user]
@@ -52,7 +55,7 @@ const Card = ({ user, revealed }: { user: UserState; revealed: boolean }) => {
           revealed && "text-blue-600 dark:text-blue-400"
         )}
       >
-        {user.username}
+        {user.username} {currentUserId === user.socketId && "(you)"}
       </span>
       <span
         className={cn(

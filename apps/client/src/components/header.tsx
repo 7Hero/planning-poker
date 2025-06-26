@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import { Button } from "./button";
 import { useCopyToClipboard } from "../hooks";
 import { cn } from "../utils";
+import { Timer } from "./timer";
 
 const VerticalSeparator = () => <div className="w-px h-4 bg-primary/30 mx-2" />;
 
@@ -24,7 +25,7 @@ const Header = () => {
             width={16}
             height={16}
             className={cn(
-              "text-primary transition-opacity duration-200",
+              "text-primary  transition-opacity duration-500",
               isCopied ? "opacity-100" : "opacity-0"
             )}
           />
@@ -32,12 +33,13 @@ const Header = () => {
             width={16}
             height={16}
             className={cn(
-              "text-primary absolute transition-opacity duration-200",
+              "text-primary absolute transition-opacity duration-500",
               isCopied ? "opacity-0" : "opacity-100"
             )}
           />
         </Button>
       </div>
+      <Timer />
       <div className="flex items-center">
         <Link
           title="Create new room"
