@@ -1,14 +1,10 @@
-export type JoinEvent = string;
-
-export type LeaveEvent = string;
-
 export type CardType = null | '1' | '2' | '3' | '5' | '8' | '13' | '21' | '34' | '55' | "?" | "☕";
 
 export type UserState = {
   socketId: string;
   roomId: string;
   username: string;
-  voted: boolean
+  voted: boolean;
   voteValue: CardType;
 };
 
@@ -18,10 +14,10 @@ export type RoomState = {
 
 export type TimerState = {
   expiresAt: number;
-  running: boolean
+  running: boolean;
 }
 
-type WSClientToServerEvents = {
+export type WSClientToServerEvents = {
   "join-room": (roomId: string, username: string) => void;
   "leave-room": (roomId: string) => void;
   "vote": (voteValue: CardType) => void;
@@ -31,7 +27,7 @@ type WSClientToServerEvents = {
   "stop-timer": (roomId: string) => void;
 }
 
-type WSServerToClientEvents = {
+export type WSServerToClientEvents = {
   "state-update": (users: { users: UserState[], isGameOver: boolean }) => void;
   "timer-update": (state: { running: boolean, expiresAt: number }) => void;
   "identity": (socketId: string) => void;
